@@ -3,12 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"fyne.io/fyne/v2/app"
 	"github.com/go-vgo/robotgo"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/sys/windows"
 	"log"
-	"os"
-	"os/signal"
+	//"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -62,6 +62,23 @@ const (
 	LLKHF_INJECTED = 0x00000010
 )
 
+var (
+	enabledMu          sync.RWMutex
+	stenographyEnabled = true
+)
+
+func setStenographyEnabled(enabled bool) {
+	enabledMu.Lock()
+	stenographyEnabled = enabled
+	enabledMu.Unlock()
+}
+
+func isStenographyEnabled() bool {
+	enabledMu.RLock()
+	defer enabledMu.RUnlock()
+	return stenographyEnabled
+}
+
 // KBDLLHOOKSTRUCT is supplied by Windows for WH_KEYBOARD_LL.
 type KBDLLHOOKSTRUCT struct {
 	VkCode      uint32
@@ -88,12 +105,12 @@ type MSG struct {
 func SQLite_connect() {
 	var err error
 
-	exe, err := os.Executable()
+	dbPath := filepath.Join(".", "user_settings.db")
+
+	dbPath, err = filepath.Abs(dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	dbPath := filepath.Join(filepath.Dir(exe), "user_settings.db")
 
 	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -325,6 +342,10 @@ func processKey(vk uint32, scanCode uint32) {
 	typing := isTyping
 	typingMu.Unlock()
 
+	if !isStenographyEnabled() {
+		return
+	}
+
 	if typing {
 		return
 	}
@@ -438,27 +459,17 @@ func main() {
 	if err := installKeyboardHook(); err != nil {
 		log.Fatal(err)
 	}
-
 	defer uninstallKeyboardHook()
 
-	fmt.Println("Text expander is running.")
-	fmt.Println("Press Ctrl+C in this console to exit.")
-
-	// Allow Ctrl+C to terminate the application cleanly.
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-
-	// The hook requires a Windows message loop.
 	go func() {
 		if err := messageLoop(); err != nil {
-			log.Println(err)
-			sigChan <- os.Interrupt
+			log.Println("Keyboard message loop:", err)
 		}
 	}()
 
-	<-sigChan
-
-	fmt.Println("Stopping...")
+	a := app.New()
+	window := createUI(a)
+	window.ShowAndRun()
 }
 
 func addSnippet(shortcut, expansion string) error {
@@ -466,6 +477,29 @@ func addSnippet(shortcut, expansion string) error {
 		INSERT INTO snippets (shortcut, expansion)
 		VALUES (?, ?)
 	`, shortcut, expansion)
+	if err != nil {
+		return err
+	}
 
-	return err
+	snippetsMu.Lock()
+	lettersToWord[shortcut] = expansion
+	snippetsMu.Unlock()
+
+	return nil
+}
+
+func deleteSnippet(shortcut string) error {
+	_, err := db.Exec(
+		`DELETE FROM snippets WHERE shortcut = ?`,
+		shortcut,
+	)
+	if err != nil {
+		return err
+	}
+
+	snippetsMu.Lock()
+	delete(lettersToWord, shortcut)
+	snippetsMu.Unlock()
+
+	return nil
 }
