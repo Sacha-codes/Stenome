@@ -1,0 +1,14 @@
+# Windows executables
+*.exe
+
+# Build output
+/bin/
+/dist/
+
+# Environment secrets
+.env
+.env.*
+
+# IDE settings
+.vscode/
+.idea/
