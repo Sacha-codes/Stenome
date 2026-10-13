@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -13,6 +14,9 @@ type snippet struct {
 	Shortcut  string
 	Expansion string
 }
+
+//go:embed icon.png
+var iconBytes []byte
 
 func loadSnippets() ([]snippet, error) {
 	rows, err := db.Query(`
@@ -40,6 +44,7 @@ func loadSnippets() ([]snippet, error) {
 
 func createUI(app fyne.App) fyne.Window {
 	window := app.NewWindow("StenoCode")
+	window.SetIcon(fyne.NewStaticResource("icon.png", iconBytes))
 	window.Resize(fyne.NewSize(720, 520))
 
 	title := widget.NewLabelWithStyle(
