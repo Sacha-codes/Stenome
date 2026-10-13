@@ -120,9 +120,6 @@ func SQLite_connect() {
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Database:", dbPath)
-
 }
 
 // SQL_extractor loads shortcut -> expansion mappings.
@@ -163,9 +160,6 @@ func SQL_boot() {
 	if err := SQL_extractor(); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Printf("Loaded %d snippets\n", len(lettersToWord))
-
 }
 
 // isDelimiter determines whether the key ends a word.
@@ -270,15 +264,13 @@ func expand(shortcut string) {
 
 	// Remove the shortcut from the target application.
 	for range shortcut {
-		for i := 0; i < 2; i++ { // Press backspace twice to ensure deletion
-			robotgo.KeyTap("backspace")
-		}
+		robotgo.KeyTap("backspace")
 	}
+	robotgo.KeyTap("backspace")
 
 	// Insert the expansion.
 	robotgo.Type(word)
 	robotgo.KeyTap("space") // Add a space after the expansion
-
 }
 
 // keyboardHookProc is the Windows low-level keyboard callback.
