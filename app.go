@@ -3,11 +3,13 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
 	"fyne.io/fyne/v2/app"
 	"github.com/go-vgo/robotgo"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/sys/windows"
-	"log"
+
 	//"os"
 	"path/filepath"
 	"strings"

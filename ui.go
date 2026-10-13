@@ -43,12 +43,12 @@ func loadSnippets() ([]snippet, error) {
 }
 
 func createUI(app fyne.App) fyne.Window {
-	window := app.NewWindow("StenoCode")
+	window := app.NewWindow("Stenome")
 	window.SetIcon(fyne.NewStaticResource("icon.png", iconBytes))
 	window.Resize(fyne.NewSize(720, 520))
 
 	title := widget.NewLabelWithStyle(
-		"StenoCode",
+		"Stenome",
 		fyne.TextAlignLeading,
 		fyne.TextStyle{Bold: true},
 	)
