@@ -111,7 +111,7 @@ func createUI(app fyne.App) fyne.Window {
 		selected = -1
 		list.UnselectAll()
 		list.Refresh()
-		status.SetText(fmt.Sprintf("%d shortcuts loaded", len(snippets)))
+		status.SetText(fmt.Sprintf("To temporarly disable expansion for a word, click CapsLK at the end of the word. %d shortcuts loaded", len(snippets)))
 	}
 
 	list.OnSelected = func(id widget.ListItemID) {
