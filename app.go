@@ -3,14 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
 	"fyne.io/fyne/v2/app"
 	"github.com/go-vgo/robotgo"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/sys/windows"
-
-	//"os"
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -107,12 +105,17 @@ type MSG struct {
 func SQLite_connect() {
 	var err error
 
-	dbPath := filepath.Join(".", "user_settings.db")
-
-	dbPath, err = filepath.Abs(dbPath)
+	appData, err := os.UserConfigDir()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	appDir := filepath.Join(appData, "Stenome")
+	if err := os.MkdirAll(appDir, 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	dbPath := filepath.Join(appDir, "user_settings.db")
 
 	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -120,6 +123,36 @@ func SQLite_connect() {
 	}
 
 	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	var tableExists bool
+	err = db.QueryRow(`    SELECT EXISTS (
+        SELECT 1 FROM sqlite_master
+        WHERE type = 'table' AND name = 'snippets'
+    )`).Scan(&tableExists)
+	if err != nil {
+	log.Fatal(err)
+	}
+
+
+	// Create the table if it doesn't already exist.
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS snippets (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		shortcut TEXT NOT NULL UNIQUE,
+		expansion TEXT NOT NULL
+	)
+	`)
+
+	if !tableExists {
+	_, err = db.Exec(`        INSERT INTO snippets (shortcut, expansion) VALUES
+        ('idk', 'I don''t know'),
+        ('brb', 'be right back'),
+        ('ty', 'thank you!')
+   	`)}
+
+	if err != nil {
 		log.Fatal(err)
 	}
 }
