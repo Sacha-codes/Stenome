@@ -14,4 +14,5 @@
 .vscode/
 .idea/
 
-user_settings.db #Hides local user settings database file
+#Hides local user settings database file
+user_settings.db 
