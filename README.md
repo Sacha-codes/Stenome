@@ -28,7 +28,7 @@
 
 ##### **Uninstalling**
 
-*Uninstalling Stenome removes the application but preserves your saved snippets and settings. To remove them completely, delete the Stenome folder inside %APPDATA%.
+* Uninstalling Stenome removes the application but preserves your saved snippets and settings. To remove them completely, delete the Stenome folder inside %APPDATA%.
 
 
 ##### **Technologies**
