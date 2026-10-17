@@ -1,5 +1,6 @@
 # Windows executables
 *.exe
+!StenomeSetup.exe
 
 # Build output
 /bin/
@@ -12,3 +13,5 @@
 # IDE settings
 .vscode/
 .idea/
+
+user_settings.db #Hides local user settings database file

@@ -3,10 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"fyne.io/fyne/v2/app"
-	"github.com/go-vgo/robotgo"
-	_ "github.com/mattn/go-sqlite3"
-	"golang.org/x/sys/windows"
 	"log"
 	"os"
 	"path/filepath"
@@ -14,6 +10,11 @@ import (
 	"sync"
 	"syscall"
 	"unsafe"
+
+	"fyne.io/fyne/v2/app"
+	"github.com/go-vgo/robotgo"
+	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/sys/windows"
 )
 
 var (
@@ -132,9 +133,8 @@ func SQLite_connect() {
         WHERE type = 'table' AND name = 'snippets'
     )`).Scan(&tableExists)
 	if err != nil {
-	log.Fatal(err)
+		log.Fatal(err)
 	}
-
 
 	// Create the table if it doesn't already exist.
 	_, err = db.Exec(`
@@ -146,11 +146,12 @@ func SQLite_connect() {
 	`)
 
 	if !tableExists {
-	_, err = db.Exec(`        INSERT INTO snippets (shortcut, expansion) VALUES
+		_, err = db.Exec(`        INSERT INTO snippets (shortcut, expansion) VALUES
         ('idk', 'I don''t know'),
         ('brb', 'be right back'),
         ('ty', 'thank you!')
-   	`)}
+   	`)
+	}
 
 	if err != nil {
 		log.Fatal(err)

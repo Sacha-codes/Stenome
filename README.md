@@ -23,7 +23,7 @@
 
 ##### **Installation**
 
-* GitHub : download the Stenome.exe file at github.com/Sacha-codes/Stenome
+* GitHub : download the StenomeSetup.exe file at github.com/Sacha-codes/Stenome
 
 
 ##### **Uninstalling**
