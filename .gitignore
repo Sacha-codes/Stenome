@@ -15,4 +15,8 @@
 .idea/
 
 #Hides local user settings database file
+<<<<<<< Updated upstream
 user_settings.db
+=======
+user_settings.db 
+>>>>>>> Stashed changes
