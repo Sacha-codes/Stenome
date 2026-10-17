@@ -26,6 +26,10 @@
 * GitHub : download the Stenome.exe file at github.com/Sacha-codes/Stenome
 
 
+##### **Uninstalling**
+
+*Uninstalling Stenome removes the application but preserves your saved snippets and settings. To remove them completely, delete the Stenome folder inside %APPDATA%.
+
 
 ##### **Technologies**
 
