@@ -23,7 +23,6 @@
 
 ##### **Installation**
 
-* Microsoft Store : You can install at XXX.XXX
 * GitHub : download the Stenome.exe file at github.com/Sacha-codes/Stenome
 
 
